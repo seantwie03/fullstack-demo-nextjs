@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import Image from "next/image";
+import Link from "next/link";
 import "./globals.css";
 
 // This ensures the page is rendered at request time, not build time
@@ -28,7 +30,22 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>{children}</body>
+      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+        <nav className="border-b px-4 py-3">
+          <div className="max-w-7xl mx-auto flex items-center justify-between">
+            <Link href="/" className="flex items-center gap-2">
+              <Image src="/images/travel-globe.png" alt="Travel Globe Logo" width={32} height={32} />
+              <span className="font-semibold text-lg">Trips</span>
+            </Link>
+            <div className="flex gap-4">
+              <Link href="/new" className="text-gray-600 hover:text-gray-900 transition-colors">
+                New Trip
+              </Link>
+            </div>
+          </div>
+        </nav>
+        <main>{children}</main>
+      </body>
     </html>
   );
 }
