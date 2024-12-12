@@ -11,12 +11,6 @@ export const tripSchema = z
       errorMap: () => ({ message: "End Date must be a valid date format" }),
     }),
     description: z.string().optional().nullable(),
-    last_updated_at: z.coerce
-      .date({
-        errorMap: () => ({ message: "Last Updated Date must be a valid date format" }),
-      })
-      .optional()
-      .default(new Date()),
   })
   .refine(
     (data) => {
@@ -27,17 +21,21 @@ export const tripSchema = z
       path: ["end_date"],
     }
   );
-// export const tripSchema = tripSchemaBase
-
-// export const tripFormSchema = tripSchemaBase.omit({ id: true, last_updated_at: true }).refine(
-//   (data) => {
-//     return data.start_date < data.end_date;
-//   },
-//   {
-//     message: "The End Date must be after the Start Date",
-//     path: ["end_date"],
-//   }
-// );
 
 export type Trip = z.infer<typeof tripSchema>;
-// export type TripFormData = z.infer<typeof tripFormSchema>;
+
+type TripFormSuccess = { success: true; data: Trip };
+type TripFormFailure = {
+  success: false;
+  errors: Partial<Record<keyof Trip, string[]>>;
+};
+
+export function validateTripForm(data: Partial<Trip>): TripFormSuccess | TripFormFailure {
+  const result = tripSchema.safeParse(data);
+  if (result.success) {
+    return { success: true, data: result.data };
+  } else {
+    const errors = result.error.flatten().fieldErrors;
+    return { success: false, errors };
+  }
+}
