@@ -37,11 +37,6 @@ export default function RootLayout({
               <Image src="/images/travel-globe.png" alt="Travel Globe Logo" width={32} height={32} />
               <span className="font-semibold text-lg">Trips</span>
             </Link>
-            <div className="flex gap-4">
-              <Link href="/new" className="text-gray-600 hover:text-gray-900 transition-colors">
-                New Trip
-              </Link>
-            </div>
           </div>
         </nav>
         <main>{children}</main>

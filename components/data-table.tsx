@@ -14,6 +14,7 @@ import {
 import { Button } from "components/ui/button";
 import { Input } from "components/ui/input";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "components/ui/table";
+import Link from "next/link";
 import { useState } from "react";
 
 interface DataTableProps<TData, TValue> {
@@ -45,13 +46,16 @@ export function DataTable<TData, TValue>({ columns, data }: DataTableProps<TData
 
   return (
     <div>
-      <div className="flex items-center py-4">
+      <div className="flex items-center py-4 justify-between">
         <Input
           placeholder="Filter all columns..."
           value={globalFilter ?? ""}
           onChange={(event) => setGlobalFilter(event.target.value)}
           className="max-w-sm"
         />
+        <Link href="./new" className="text-gray-600 hover:text-gray-900 transition-colors">
+          New Trip
+        </Link>
       </div>
       <div className="rounded-md border">
         <Table>
