@@ -11,6 +11,32 @@ import {
 } from "components/ui/dropdown-menu";
 import { Trip } from "lib/schema";
 import { MoreHorizontal } from "lucide-react";
+import EditTripModal from "./EditTripModal";
+import { useState } from "react";
+
+// Separate component for the actions cell
+function ActionsCell({ trip }: { trip: Trip }) {
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+
+  return (
+    <>
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button variant="ghost" className="h-8 w-8 p-0">
+            <span className="sr-only">Open menu</span>
+            <MoreHorizontal className="h-4 w-4" />
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Actions</DropdownMenuLabel>
+          <DropdownMenuItem onClick={() => setIsEditModalOpen(true)}>Edit</DropdownMenuItem>
+        </DropdownMenuContent>
+      </DropdownMenu>
+
+      <EditTripModal isOpen={isEditModalOpen} onClose={() => setIsEditModalOpen(false)} trip={trip} />
+    </>
+  );
+}
 
 export const columns: ColumnDef<Trip>[] = [
   {
@@ -51,21 +77,7 @@ export const columns: ColumnDef<Trip>[] = [
     enableColumnFilter: false,
     cell: ({ row }) => {
       const trip = row.original;
-
-      return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Open menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Actions</DropdownMenuLabel>
-            <DropdownMenuItem onClick={() => console.log("Edit trip", trip)}>Edit</DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
-      );
+      return <ActionsCell trip={trip} />;
     },
   },
 ];
