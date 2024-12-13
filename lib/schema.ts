@@ -27,7 +27,7 @@ export type Trip = z.infer<typeof tripSchema>;
 type TripFormSuccess = { success: true; data: Trip };
 type TripFormFailure = {
   success: false;
-  errors: Partial<Record<keyof Trip, string[]>>;
+  errors: Partial<Record<keyof Trip, string[]>> & { serverError?: string[] };
 };
 
 export function validateTripForm(data: Partial<Trip>): TripFormSuccess | TripFormFailure {

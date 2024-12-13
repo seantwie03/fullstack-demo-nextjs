@@ -1,6 +1,6 @@
 "use server";
 
-import sql from "@/lib/db";
+import sql from "lib/db";
 import { validateTripForm } from "lib/schema";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -17,17 +17,26 @@ export async function createTrip(prevState: any, formData: FormData) {
     };
   }
 
-  // Here you would typically save the trip to your database
   console.log("Trip created:", result.data);
-  await sql`
-    INSERT INTO trips
-      (title, start_date, end_date, description)
-    VALUES
-      (${result.data.title}, ${result.data.start_date}, ${result.data.end_date}, ${result.data.description || null})
-  `;
+  try {
+    await sql`
+      INSERT INTO trips
+        (title, start_date, end_date, description)
+      VALUES
+        (${result.data.title}, ${result.data.start_date}, ${result.data.end_date}, ${result.data.description || null})
+    `;
 
-  return {
-    message: "Trip created successfully!",
-    trip: result.data,
-  };
+    return {
+      message: "Trip created successfully!",
+      trip: result.data,
+    };
+  } catch (error) {
+    console.error("Failed to create trip:", error);
+    return {
+      errors: {
+        serverError: ["Failed to create trip in database"],
+      },
+      message: "Internal Server Error!",
+    };
+  }
 }

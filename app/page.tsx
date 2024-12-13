@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default async function Home() {
   const trips: Trip[] = await sql`
-    SELECT id, title, start_date, end_date, description, last_updated_at 
+    SELECT id, title, start_date, end_date, description
     FROM trips 
     ORDER BY start_date DESC
   `;

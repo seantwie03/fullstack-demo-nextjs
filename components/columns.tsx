@@ -11,10 +11,9 @@ import {
 } from "components/ui/dropdown-menu";
 import { Trip } from "lib/schema";
 import { MoreHorizontal } from "lucide-react";
-import EditTripModal from "./EditTripModal";
 import { useState } from "react";
+import EditTripModal from "./EditTripModal";
 
-// Separate component for the actions cell
 function ActionsCell({ trip }: { trip: Trip }) {
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 

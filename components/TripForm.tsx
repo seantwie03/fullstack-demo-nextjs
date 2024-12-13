@@ -1,12 +1,12 @@
 "use client";
 
 import { createTrip } from "@/app/actions/createTrip";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "components/ui/button";
+import { Input } from "components/ui/input";
+import { Label } from "components/ui/label";
+import { Textarea } from "components/ui/textarea";
+import { Trip, validateTripForm } from "lib/schema";
 import React, { useActionState, useState, useTransition } from "react";
-import { Trip, validateTripForm } from "../lib/schema";
 
 export default function TripForm() {
   const [state, formAction] = useActionState(createTrip, null);
@@ -19,6 +19,18 @@ export default function TripForm() {
   });
   const [errors, setErrors] = useState<Partial<Record<keyof Trip, string[]>>>({});
 
+  const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    const { name, value } = e.target;
+
+    // Validate the field
+    const validationResult = validateTripForm({ ...formData, [name]: value });
+    if (!validationResult.success) {
+      setErrors((prev) => ({ ...prev, [name]: validationResult.errors[name as keyof Trip] }));
+    } else {
+      setErrors((prev) => ({ ...prev, [name]: undefined }));
+    }
+  };
+
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     let newValue: string | Date = value;
@@ -28,14 +40,6 @@ export default function TripForm() {
     }
 
     setFormData((prev) => ({ ...prev, [name]: newValue }));
-
-    // Validate the field
-    const validationResult = validateTripForm({ ...formData, [name]: newValue });
-    if (!validationResult.success) {
-      setErrors((prev) => ({ ...prev, [name]: validationResult.errors[name as keyof Trip] }));
-    } else {
-      setErrors((prev) => ({ ...prev, [name]: undefined }));
-    }
   };
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -59,7 +63,14 @@ export default function TripForm() {
     <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
       <div>
         <Label htmlFor="title">Title</Label>
-        <Input id="title" name="title" value={formData.title} onChange={handleChange} placeholder="Trip Title" />
+        <Input
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          onBlur={handleBlur}
+          placeholder="Trip Title"
+        />
         {errors.title && <p className="text-red-500 text-sm">{errors.title[0]}</p>}
       </div>
 
@@ -70,6 +81,7 @@ export default function TripForm() {
           name="start_date"
           type="date"
           value={formData.start_date instanceof Date ? formData.start_date.toISOString().split("T")[0] : ""}
+          onBlur={handleBlur}
           onChange={handleChange}
         />
         {errors.start_date && <p className="text-red-500 text-sm">{errors.start_date[0]}</p>}
@@ -82,6 +94,7 @@ export default function TripForm() {
           name="end_date"
           type="date"
           value={formData.end_date instanceof Date ? formData.end_date.toISOString().split("T")[0] : ""}
+          onBlur={handleBlur}
           onChange={handleChange}
         />
         {errors.end_date && <p className="text-red-500 text-sm">{errors.end_date[0]}</p>}
@@ -93,6 +106,7 @@ export default function TripForm() {
           id="description"
           name="description"
           value={formData.description || ""}
+          onBlur={handleBlur}
           onChange={handleChange}
           placeholder="Trip Description"
         />
